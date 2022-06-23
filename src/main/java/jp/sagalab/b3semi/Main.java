@@ -68,7 +68,7 @@ public class Main extends JFrame {
   public void drawPoint(double _x, double _y) {
     Graphics2D g = (Graphics2D)m_canvas.getGraphics();
     double radius = 6;
-    Ellipse2D.Double oval = new Ellipse2D.Double(_x, _y, radius, radius);
+    Ellipse2D.Double oval = new Ellipse2D.Double(_x - radius/2, _y - radius/2, radius, radius);
     g.draw(oval);
   }
 
