@@ -2,6 +2,8 @@ package jp.sagalab.b3semi;
 
 import javax.swing.*;
 import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.Canvas;
@@ -31,8 +33,16 @@ public class Main extends JFrame {
     setTitle("b3zemi");
     add(m_canvas);
     pack();
-    setVisible( true );
     ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    JPanel pane = new JPanel();
+    getContentPane().add(pane, BorderLayout.NORTH);
+    JButton clear = new JButton("CLEAR");
+    pane.add(clear);
+    slider.addChangeListener(new sliderT());
+    pane.add(slider);
+    lab.setFont(new Font("MS ゴシック", Font.BOLD, 25));
+    pane.add(lab);
+    setVisible( true );
 
     m_canvas.addMouseListener(
       new MouseAdapter() {
@@ -53,6 +63,8 @@ public class Main extends JFrame {
 
             if (m_controlPoints.size() == MAX_CONTROL_POINTS) {
               drawflag = true;
+              clear.setEnabled(false);
+              slider.setEnabled(false);
             }
           }
           if(m_controlPoints.size() == MAX_CONTROL_POINTS && !drawflag) drawflag = true;
@@ -60,15 +72,18 @@ public class Main extends JFrame {
       }
     );
     service.scheduleAtFixedRate(() -> {
+
       if(drawflag) {
         calcBezierCurve(drawcount);
         drawcount ++;
         if(drawcount > T){
           drawflag = false;
           drawcount = 0;
+          clear.setEnabled(true);
         }
       }
     }, 0, 100, TimeUnit.MILLISECONDS);
+    clear.addActionListener(new allClear());
   }
 
 
@@ -91,6 +106,8 @@ public class Main extends JFrame {
     g.setColor(Color.white);
     g.fillRect(0,0,800,600);
   }
+
+
   /**
    * 点を描画する
    * @param _x x座標
@@ -101,7 +118,7 @@ public class Main extends JFrame {
     double radius = 6;
     g.setColor(c);
     Ellipse2D.Double oval = new Ellipse2D.Double(_x - radius/2, _y - radius/2, radius, radius);
-    if(!fill) g.fill(oval);
+    if(fill) g.fill(oval);
     g.draw(oval);
   }
 
@@ -119,6 +136,35 @@ public class Main extends JFrame {
     g.draw(line);
   }
 
+  class allClear implements ActionListener {
+    public allClear(){
+      super();
+    }
+    @Override
+    public void actionPerformed(ActionEvent e){
+      if(!drawflag){
+        m_controlPoints.clear();
+        BezierPoints.clear();
+        drawflag = false;
+        drawcount = 0;
+        canvasClean();
+        slider.setEnabled(true);
+      }
+    }
+  }
+
+  class sliderT implements ChangeListener {
+    public sliderT(){
+      super();
+    }
+    @Override
+    public void stateChanged(ChangeEvent e) {
+      JSlider source = (JSlider) e.getSource();
+      MAX_CONTROL_POINTS = (int) source.getValue();
+      lab.setText(String.valueOf(MAX_CONTROL_POINTS));
+    }
+  }
+
   /**
    * @param _args the command line arguments
    */
@@ -126,6 +172,8 @@ public class Main extends JFrame {
 
   /** キャンバスを表す変数 */
   private Canvas m_canvas = new Canvas();
+  private JSlider slider = new JSlider(3,10,3);
+  JLabel lab = new JLabel(String.valueOf(MAX_CONTROL_POINTS));
 
   /** クリックで打たれた点を保持するリスト */
   private List<Point2D.Double> m_controlPoints = new ArrayList<>();
@@ -136,7 +184,7 @@ public class Main extends JFrame {
   /** 点の数の上限
    * （[MAX_CONTROL_POINTS]個の点を打つと、[MAX_CONTROL_POINTS - 1]次のベジェ曲線が描かれる）
    */
-  private static final int MAX_CONTROL_POINTS = 5;
+  private static int MAX_CONTROL_POINTS = 3;
   private static final int T = 100;
 
   private static boolean drawflag = false;
