@@ -1,10 +1,15 @@
 package jp.sagalab.b3semi;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 public final class BezierCurve {
   public static BezierCurve create(List<Point2D.Double> _controlPoints) {
+
     return new BezierCurve(_controlPoints);
   }
 
@@ -14,14 +19,26 @@ public final class BezierCurve {
    * @return 評価点
    */
   public Point2D.Double evaluate(double _t) {
-    return new Point2D.Double(/* x, y */);
+      double x1 = (1 - _t) * m_controlPoints.get(0).getX() + _t * m_controlPoints.get(1).getX();
+      double y1 = (1 - _t) * m_controlPoints.get(0).getY() + _t * m_controlPoints.get(1).getY();
+      double x2 = (1 - _t) * m_controlPoints.get(1).getX() + _t * m_controlPoints.get(2).getX();
+      double y2 = (1 - _t) * m_controlPoints.get(1).getY() + _t * m_controlPoints.get(2).getY();
+      double x3 = (1 - _t) * x1 + _t * x2;
+      double y3 = (1 - _t) * y1 + _t * y2;
+    return new Point2D.Double( x3, y3 );
   }
 
   /* ↓ここから必要な関数を書き足していく↓ */
+  /*public Point2D.Double naibunn(int t,double _t){
+    double x=(1-_t)*m_controlPoints.get(t).getX()+_t*m_controlPoints.get(t+1).getX();
+
+  }*/
+
 
   private BezierCurve(List<Point2D.Double> _controlPoints) {
     m_controlPoints = _controlPoints;
   }
 
   private List<Point2D.Double> m_controlPoints;
+  //private List<Point2D.Double>  = new ArrayList<>();
 }
