@@ -67,7 +67,11 @@ public class Main extends JFrame {
               slider.setEnabled(false);
             }
           }
-          if(m_controlPoints.size() == MAX_CONTROL_POINTS && !drawflag) drawflag = true;
+          if(m_controlPoints.size() == MAX_CONTROL_POINTS && !drawflag){
+            drawflag = true;
+            clear.setEnabled(false);
+            slider.setEnabled(false);
+          }
         }
       }
     );
