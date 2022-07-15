@@ -58,6 +58,19 @@ public class Main extends JFrame {
 
     /* ↓ここから必要な処理を書き足していく↓ */
     // コツ: bezierCurve.evaluate(_t) と drawLine(_p1, _p2) を駆使する
+    System.out.println(m_controlPoints.get(0).getX());
+    System.out.println(m_controlPoints.get(0).getY());
+    System.out.println(m_controlPoints.get(1).getX());
+    System.out.println(m_controlPoints.get(1).getY());
+    System.out.println(m_controlPoints.get(2).getX());
+    System.out.println(m_controlPoints.get(2).getY());
+    drawLine(m_controlPoints.get(0),m_controlPoints.get(1));
+    drawLine(m_controlPoints.get(1),m_controlPoints.get(2));
+
+    for (double _t=0.00;_t<=1;_t+=0.01){
+      drawLine(bezierCurve.evaluate(_t), bezierCurve.evaluate(_t + 0.01));
+    }
+
   }
 
   /**
