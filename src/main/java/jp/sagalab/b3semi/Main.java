@@ -58,6 +58,18 @@ public class Main extends JFrame {
 
     /* ↓ここから必要な処理を書き足していく↓ */
     // コツ: bezierCurve.evaluate(_t) と drawLine(_p1, _p2) を駆使する
+    for(double t=0;t<100;t++){
+      Point2D.Double l = bezierCurve.evaluate(t/100);
+      l_controlPoints.add(l);
+    }
+    for(int i=0;i<m_controlPoints.size()-1;i++){
+      drawLine(m_controlPoints.get(i),m_controlPoints.get(i+1));
+    }
+
+    for(int i=0;i<l_controlPoints.size()-1;i++){
+      drawLine(l_controlPoints.get(i),l_controlPoints.get(i+1));
+    }
+
   }
 
   /**
@@ -93,6 +105,8 @@ public class Main extends JFrame {
 
   /** クリックで打たれた点を保持するリスト */
   private List<Point2D.Double> m_controlPoints = new ArrayList<>();
+  private List<Point2D.Double> l_controlPoints = new ArrayList<>();
+
 
   /** 点の数の上限
    * （[MAX_CONTROL_POINTS]個の点を打つと、[MAX_CONTROL_POINTS - 1]次のベジェ曲線が描かれる）
