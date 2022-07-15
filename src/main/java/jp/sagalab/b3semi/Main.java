@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class Main extends JFrame {
     addWindowListener(new WindowClosing());
     setState(JFrame.ICONIFIED);
     setIconImage(new ImageIcon("icon.jpg").getImage());
-    m_canvas.setSize(800, 600);
-    m_canvas.setBackground(Color.WHITE);
+    m_canvas.setSize(700, 700);
+    m_canvas.setBackground(Color.RED);
     setTitle("b3zemi");
     add(m_canvas);
     pack();
@@ -40,12 +41,16 @@ public class Main extends JFrame {
             // 打った点をリストに追加する
             m_controlPoints.add(p);
             // 打った点を描画する
-            drawPoint(p.getX(), p.getY());
+            drawPoint(p.getX(),p.getY());
+
+
 
             // 点が揃ったら
             if (m_controlPoints.size() == MAX_CONTROL_POINTS) {
               // ベジェ曲線を描画
               drawBezierCurve();
+
+
             }
           }
         }
@@ -58,7 +63,14 @@ public class Main extends JFrame {
 
     /* ↓ここから必要な処理を書き足していく↓ */
     // コツ: bezierCurve.evaluate(_t) と drawLine(_p1, _p2) を駆使する
+    drawLine(m_controlPoints.get(0),m_controlPoints.get(1));
+    drawLine(m_controlPoints.get(1),m_controlPoints.get(2));
+    List<Point2D.Double>naibun=new ArrayList<>();
+    for (double t=0;t<=1;t+=0.01){
+      drawLine(bezierCurve.evaluate(t),bezierCurve.evaluate(t+0.01));
+    }
   }
+
 
   /**
    * 点を描画する
@@ -93,6 +105,7 @@ public class Main extends JFrame {
 
   /** クリックで打たれた点を保持するリスト */
   private List<Point2D.Double> m_controlPoints = new ArrayList<>();
+
 
   /** 点の数の上限
    * （[MAX_CONTROL_POINTS]個の点を打つと、[MAX_CONTROL_POINTS - 1]次のベジェ曲線が描かれる）
